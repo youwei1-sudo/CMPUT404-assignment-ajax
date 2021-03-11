@@ -22,7 +22,7 @@
 
 
 import flask
-from flask import Flask, request
+from flask import Flask, request, redirect
 import json
 app = Flask(__name__)
 app.debug = True
@@ -44,15 +44,33 @@ class World:
 
     def set(self, entity, data):
         self.space[entity] = data
+        self.notify_all(entity,data)
 
     def clear(self):
         self.space = dict()
+        self.listeners = dict()
 
     def get(self, entity):
         return self.space.get(entity,dict())
     
     def world(self):
         return self.space
+
+    # notify all of listerners that data has been manipulated    
+    def notify_all(self,entity,data):
+        for listener in self.listeners:
+           self.listeners[listener][entity] = data
+
+    def add_listener(self,listener_name):
+        self.listeners[listener_name] = dict()
+
+    def get_listener(self, listener_name):
+        return self.listeners[listener_name]
+
+    def clear_listener(self, listener_name):
+        self.listeners[listener_name] = dict()
+
+
 
 # you can test your webservice from the commandline
 # curl -v   -H "Content-Type: application/json" -X PUT http://127.0.0.1:5000/entity/X -d '{"x":1,"y":1}' 
@@ -74,27 +92,51 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+
+    #returns the message we want to display in the user’s browser.
+    return redirect("/static/index.html", code=302)
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
-    '''update the entities via this interface'''
-    return None
+    '''update the entities via this interface, add entity'''
+
+    v = flask_post_json()
+    myWorld.set( entity, v )
+    e = myWorld.get(entity)    
+    # flask has a security restriction in jsonify
+    return json.dumps(e) # flask.jsonify( e )
+
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return None
+    return json.dumps( myWorld.world() ) 
+
+@app.route("/listener/<listener_id>", methods=['POST','PUT'])
+def add_listener(listener_id):
+    myWorld.add_listener( listener_id )
+    return flask.jsonify(dict())
+
+@app.route("/listener/<listener_id>")    
+def get_listener(listener_id):
+    v = myWorld.get_listener(listener_id)
+    myWorld.clear_listener(listener_id)
+    return flask.jsonify( v )
+
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    e = myWorld.get(entity)    
+    # flask has a security restriction in jsonify
+    return json.dumps( e ) # flask.jsonify( e )
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    return None
+
+    myWorld.clear()
+    return json.dumps(myWorld.world())
 
 if __name__ == "__main__":
     app.run()
