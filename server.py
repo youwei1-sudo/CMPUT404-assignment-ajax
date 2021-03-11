@@ -99,7 +99,6 @@ def hello():
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface, add entity'''
-
     v = flask_post_json()
     myWorld.set( entity, v )
     e = myWorld.get(entity)    
@@ -124,7 +123,7 @@ def get_listener(listener_id):
     return flask.jsonify( v )
 
 
-@app.route("/entity/<entity>")    
+@app.route("/entity/<entity>", methods=['GET'])    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
     e = myWorld.get(entity)    

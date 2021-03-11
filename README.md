@@ -14,17 +14,12 @@ Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle.
 
 
 
-Acitivity analysis 
+User story analysis 
 ========================
-As a web browser user I want to draw on the canvas
-As a web browser user I want to see others drawing on the canvas
-As a web browser user I want the system to be responsive to my actions (< 100ms)
-As a web browser user I want to watch as other users draw on the canvas
-As a web service user I want to get access to the world
-As a web service user I want to post entities that have at least ‘x’ and ‘y’ co-ordinates
-As a web service user I will probably ping the system a lot to get updates.
 
+[] static/index.html responds to clicks within 100ms on average
 
-TODO, in indiex.HTML
+[ ] The webservice can pass all the tests in not-free-tests.py (you only have part of this one, I reserve the right to add tests)
 
+Use listener
 
