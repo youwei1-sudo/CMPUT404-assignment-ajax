@@ -35,6 +35,9 @@
         var counter = 0;
         world = {};
 
+        // global var design for mouse feature
+        var colours = ["red","orange","yellow","green","blue","purple","white","pink"];
+        var cur_color = "green";
 
         function sendJSONXMLHTTPRequest(url, objects, callback) {
             var xhr = new XMLHttpRequest();
@@ -70,7 +73,6 @@
                 if (xhr.readyState==4) {
                     try {
                         if (xhr.status==200) {
-                            console.log("refreshed");
                             // update world
                             world = JSON.parse(xhr.responseText);
                         }
@@ -201,7 +203,9 @@
             // Now this isn't the most popular way of doing OO in 
             // Javascript, but it relies on lexical scope and I like it
             // This isn't 301 so I'm not totally bound to OO :)
-            var self;    
+            var self;
+
+
             self = {
                 clicked: 0,
                 // these are listener lists append to them
@@ -293,15 +297,21 @@
         // Add the application specific mouse listeners!
         //XXX: TODO Make these prettier!
         mouse.mousedowners.push(function(x,y,clicked,e) {
-            addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+
+
+            cur_color = colours[Math.floor(Math.random() * 8)];
+
+            addEntityWithoutName({'x':x,'y':y,'colour': cur_color, 'radius':10 });
         });
 
         mouse.mouseuppers.push(function(x,y,clicked,e) {
-            addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+            cur_color = colours[Math.round(Math.random() * 8)];
+
+            addEntityWithoutName({'x':x,'y':y,'colour': cur_color, 'radius':10});
         });
 
         mouse.mousedraggers.push(function(x,y,clicked,e) {
-            addEntityWithoutName({'x':x,'y':y,'colour':'green',
+            addEntityWithoutName({'x':x,'y':y,'colour':cur_color ,
                                   'radius':10});
         });
 
