@@ -312,6 +312,8 @@
             var url = "http://"+host+"/world";
             get_sendJSONXMLHTTPRequest(url);
 
+            // before drawFrame to update, set flag to be true
+            drawNextFrame();
             drawFrame();
         }
 
