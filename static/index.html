@@ -46,6 +46,7 @@
         var colours = ["hsl(0, 100%, 50%)","hsl(1, 100%, 50%)","hsl(2, 100%, 50%)","hsl(3, 100%, 50%)","hsl(4, 100%, 50%)","hsl(5, 100%, 50%)","hsl(6, 100%, 50%)","hsl(7, 100%, 50%)"];
         var cur_color = "hsl(0, 100%, 50%)";
         var cur_radius = 10;
+        var bigger_flag = 1;
 
         function sendJSONXMLHTTPRequest(url, objects, callback) {
             var xhr = new XMLHttpRequest();
@@ -380,18 +381,23 @@
         //XXX: TODO Make these prettier!
         mouse.mousedowners.push(function(x,y,clicked,e) {
 
-
             cur_color = colours[Math.floor(Math.random() * 8 )];
 
-            if (cur_radius > 50) {
-                cur_radius = cur_radius - 15;
-            } else {
-                cur_radius = cur_radius - 1;
+            if (cur_radius > 90) {
+                bigger_flag = 0;
 
+            } 
+
+            if (bigger_flag) {
+                cur_radius = cur_radius - 5;
+            } else {
+                cur_radius = cur_radius - 15;
             }
+
 
             if (cur_radius < 10 ) {
                 cur_radius = 10;
+                bigger_flag = 1;
             }
 
             addEntityWithoutName({'x':x,'y':y,'colour': cur_color, 'radius':cur_radius });
