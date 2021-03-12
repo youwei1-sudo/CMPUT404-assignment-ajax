@@ -56,6 +56,10 @@ class World:
     def world(self):
         return self.space
 
+    def post_world(self, c_world):
+
+    	self.space = c_world
+
     # notify all of listerners that data has been manipulated    
     def notify_all(self,entity,data):
         for listener in self.listeners:
@@ -107,10 +111,19 @@ def update(entity):
     return json.dumps(e) # flask.jsonify( e )
 
 
-@app.route("/world", methods=['POST','GET'])    
+@app.route("/world", methods=['GET'])    
 def world():
     '''you should probably return the world here'''
     return json.dumps( myWorld.world() ) 
+
+
+@app.route("/world/<c_world>", methods=['POST'])    
+def post_world(c_world):
+    '''you should probably return the world here'''
+    myWorld.post_world(c_world)
+
+    return json.dumps( myWorld.world() ) 
+
 
 @app.route("/listener/<listener_id>", methods=['POST','PUT'])
 def add_listener(listener_id):
