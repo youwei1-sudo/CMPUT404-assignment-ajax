@@ -41,8 +41,11 @@
         world = {};
 
         // global var design for mouse feature
-        var colours = ["#5F9EA0","#4682B4","#00CED1","#48D1CC","#FFDAB9","#663399","#FFB6C1","#DB7093"];
-        var cur_color = "#5F9EA0";
+        // var colours = ["#5F9EA0","#4682B4","#00CED1","#48D1CC","#FFDAB9","#663399","#FFB6C1","#DB7093"];
+        // var cur_color = "#5F9EA0";
+        var colours = ["hsl(0, 100%, 50%)","hsl(1, 100%, 50%)","hsl(2, 100%, 50%)","hsl(3, 100%, 50%)","hsl(4, 100%, 50%)","hsl(5, 100%, 50%)","hsl(6, 100%, 50%)","hsl(7, 100%, 50%)"];
+        var cur_color = "hsl(0, 100%, 50%)";
+        var cur_radius = 10;
 
         function sendJSONXMLHTTPRequest(url, objects, callback) {
             var xhr = new XMLHttpRequest();
@@ -150,7 +153,7 @@
 
         function prepEntity(entity) {
             if (!entity["colour"]) {
-                entity["colour"] = "#FF0000";
+                entity["colour"] = "hsl(0, 100%, 50%)";
             }
             if (!entity["radius"]) {
                 entity["radius"] = 50;
@@ -380,18 +383,34 @@
 
             cur_color = colours[Math.floor(Math.random() * 8 )];
 
-            addEntityWithoutName({'x':x,'y':y,'colour': cur_color, 'radius':10 });
+            if (cur_radius > 50) {
+                cur_radius = cur_radius - 15;
+            } else {
+                cur_radius = cur_radius - 1;
+
+            }
+
+            if (cur_radius < 10 ) {
+                cur_radius = 10;
+            }
+
+            addEntityWithoutName({'x':x,'y':y,'colour': cur_color, 'radius':cur_radius });
         });
 
         mouse.mouseuppers.push(function(x,y,clicked,e) {
             cur_color = colours[Math.round(Math.random() * 8)];
+            cur_radius = cur_radius + 10;
 
-            addEntityWithoutName({'x':x,'y':y,'colour': cur_color, 'radius':10});
+            if (cur_radius > 100 ) {
+                cur_radius = 100;
+            }
+
+            addEntityWithoutName({'x':x,'y':y,'colour': cur_color, 'radius':cur_radius});
         });
 
         mouse.mousedraggers.push(function(x,y,clicked,e) {
             addEntityWithoutName({'x':x,'y':y,'colour':cur_color ,
-                                  'radius':10});
+                                  'radius':cur_radius});
         });
 
 
