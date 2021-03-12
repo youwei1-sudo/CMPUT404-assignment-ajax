@@ -58,12 +58,12 @@ class World:
 
     def post_world(self, c_world):
 
-    	self.space = c_world
+        self.space = c_world
 
     # notify all of listerners that data has been manipulated    
     def notify_all(self,entity,data):
         for listener in self.listeners:
-        	# only contain the data that has been manipulated
+            # only contain the data that has been manipulated
            self.listeners[listener][entity] = data
 
     def add_listener(self,listener_name):
@@ -74,6 +74,12 @@ class World:
 
     def clear_listener(self, listener_name):
         self.listeners[listener_name] = dict()
+
+    def listener_exist_flag(self, listener_name):
+        if listener_name not in self.listeners:
+            return False
+        return True
+            
 
 
 
@@ -134,8 +140,15 @@ def add_listener(listener_id):
 
 @app.route("/listener/<listener_id>", methods=['GET'])    
 def get_listener(listener_id):
-    v = myWorld.get_listener(listener_id)
-    myWorld.clear_listener(listener_id)
+
+    if myWorld.listener_exist_flag(listener_id):
+        v = myWorld.get_listener(listener_id)
+        myWorld.clear_listener(listener_id)
+    else:
+        myWorld.add_listener(listener_id)
+        v = dict()
+        v["clear"] = "True"
+
     return flask.jsonify( v )
 
 
@@ -149,7 +162,6 @@ def get_entity(entity):
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-
     myWorld.clear()
     return json.dumps(myWorld.world())
 

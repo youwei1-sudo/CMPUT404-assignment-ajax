@@ -110,11 +110,7 @@
                             text = xhr.responseText;
                             if (text) {
                                 var objs = JSON.parse(text);
-
-                                if (objs.length != 0) {
-                                    updateWorldWith(objs);
-                                    drawNextFrame();
-                                }
+                                callback(objs)
                                 
                             }
 
@@ -231,6 +227,35 @@
             // world[entity] = data;
             // drawNextFrame(); 
         }
+
+        //update whole world after clear
+        function world_callback(server_world) {
+            if (server_world.length != 0) {
+                world = server_world;
+                drawNextFrame();
+            }
+
+        }
+
+        function update_callback(objs){
+
+            if (objs.length != 0) {
+                // user just typed clear in url, we need to refresh whole world!
+                if ("clear" in objs) {
+                    alert("some one clear world");
+                    var url = "http://"+host+"/world";
+                    get_sendJSONXMLHTTPRequest(url, world_callback);
+
+
+                } else {
+                // we can just update world diff
+                    updateWorldWith(objs);
+                    drawNextFrame();
+                }
+                    
+            }
+        }
+
 
 
         function addEntity(entity, data) {
@@ -374,7 +399,7 @@
             //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
             // 
             var url = "http://"+host+"/listener/"+id;
-            get_sendJSONXMLHTTPRequest(url);
+            get_sendJSONXMLHTTPRequest(url, update_callback);
 
             // before drawFrame to update, set flag to be true
             drawFrame();
