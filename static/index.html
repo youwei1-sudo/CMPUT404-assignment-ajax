@@ -33,6 +33,9 @@
 
         var drawNext = true;
         var counter = 0;
+
+        var id = "L"+Math.floor(20000000*Math.random());
+
         world = {};
 
         // global var design for mouse feature
@@ -52,12 +55,12 @@
                         }
                     } 
                     catch(e) {
-                        alert('Error: ' + e.name);
+                        alert('Add Entity Error: ' + e.name);
                     }
                 }
             };
-            //XXX: POST to a URL
 
+            //XXX: POST to a URL
             xhr.open("POST", url);
             //XXX: set the mimetype and the accept headers!
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -65,27 +68,63 @@
             // Remember to use application/json !
         }
 
+        // send put json request, design for register
+        function put_sendJSONXMLHTTPRequest(url , callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState==4) {
+                    try {
+                        if (xhr.status==200) {
+                            //pass
+                            // update accoding returned info  
+                            text = xhr.responseText;
+                            if (text) {
+                                world = JSON.parse(text);
+                            }
+                        }
+                    } 
+                    catch(e) {
+                        alert('Error PUT: ' + e.name);
+                    }
+                }
+            };
 
-        // get world to update
+            //XXX: POST to a URL
+            xhr.open("PUT", url);
+            //XXX: set the mimetype and the accept headers!
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send();
+        }
+
+
+        // get info to update
         function get_sendJSONXMLHTTPRequest(url, callback) {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState==4) {
                     try {
                         if (xhr.status==200) {
-                            // update world
-                            world = JSON.parse(xhr.responseText);
+                            // update accoding returned info  
+                            text = xhr.responseText;
+                            if (text) {
+                                var objs = JSON.parse(text);
+
+                                if (objs.length != 0) {
+                                    updateWorldWith(objs);
+                                    drawNextFrame();
+                                }
+                                
+                            }
+
                         }
                     } 
                     catch(e) {
-                        alert('Error: ' + e.name);
+                        alert('get info Error: ' + e.name);
                     }
                 }
             };
-            //XXX: POST to a URL
 
             xhr.open("GET", url);
-            //XXX: set the mimetype and the accept headers!
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send();
             // Remember to use application/json !
@@ -137,6 +176,15 @@
                 var entity = world[key];
                 drawCircle(context,prepEntity(entity));
             }
+        }
+
+        // update world with specific objs
+        function updateWorldWith(objs) {
+            for (var key in objs) {
+                world[key] = objs[key];
+            }
+
+
         }
 
 
@@ -320,26 +368,28 @@
         function update() {
             //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
             // 
-            var url = "http://"+host+"/world";
+            var url = "http://"+host+"/listener/"+id;
             get_sendJSONXMLHTTPRequest(url);
 
             // before drawFrame to update, set flag to be true
-            drawNextFrame();
             drawFrame();
         }
 
-        
+        //register for listener
+        function register(id) {
+            var url = "http://"+host+"/listener/"+id;
+            put_sendJSONXMLHTTPRequest(url);
+
+            drawFrame();
+        }
+
+        register(id);
+
         // 30 frames per second
         setInterval( update, 1000/30.0);
 
     </script>
 
-<!--     testing  -->
-<!-- 
-    <div id="worldview" class="entity world">
-
-    </div> -->
-<!--     testing  -->
 
 </body>
 </html>

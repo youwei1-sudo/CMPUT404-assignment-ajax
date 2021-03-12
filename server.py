@@ -59,6 +59,7 @@ class World:
     # notify all of listerners that data has been manipulated    
     def notify_all(self,entity,data):
         for listener in self.listeners:
+        	# only contain the data that has been manipulated
            self.listeners[listener][entity] = data
 
     def add_listener(self,listener_name):
@@ -114,9 +115,11 @@ def world():
 @app.route("/listener/<listener_id>", methods=['POST','PUT'])
 def add_listener(listener_id):
     myWorld.add_listener( listener_id )
-    return flask.jsonify(dict())
 
-@app.route("/listener/<listener_id>")    
+    # give enitre world when we register, to follow other listerners' step
+    return flask.jsonify( myWorld.world() ) 
+
+@app.route("/listener/<listener_id>", methods=['GET'])    
 def get_listener(listener_id):
     v = myWorld.get_listener(listener_id)
     myWorld.clear_listener(listener_id)
