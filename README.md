@@ -14,12 +14,3 @@ Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle.
 
 
 
-User story analysis 
-========================
-
-[] static/index.html responds to clicks within 100ms on average
-
-[ ] The webservice can pass all the tests in not-free-tests.py (you only have part of this one, I reserve the right to add tests)
-
-Use listener
-

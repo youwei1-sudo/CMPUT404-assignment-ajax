@@ -33,6 +33,8 @@
 
         var drawNext = true;
         var counter = 0;
+        // contain the  pre update info to upade entity
+        var temp_counter = counter;
 
         var id = "L"+Math.floor(20000000*Math.random());
 
@@ -144,7 +146,7 @@
                 arc(x, y, (entity["radius"])?entity["radius"]:10, 0, 2.0 * Math.PI, false);
 
                 //fill colour
-                strokeStyle = '#F5FFFA';  
+                strokeStyle = fillStyle;  
                 fill();
                 stroke();                                
             }
@@ -186,7 +188,7 @@
                 counter++;
             }
 
-
+            temp_counter = counter;
         }
 
 
@@ -224,10 +226,10 @@
 
         // after call back from the request
         function refresh_callback(data) {
-
-            var entity = "X"+(counter)%100;
-            world[entity] = data;
-            drawNextFrame(); 
+            // we can move the code below , to update local when 30 ms time lock
+            // var entity = "X"+(counter)%100;
+            // world[entity] = data;
+            // drawNextFrame(); 
         }
 
 
@@ -243,7 +245,8 @@
 
         function addEntityWithoutName(data) {
             //var name = "X"+Math.floor((Math.random()*100)+1);
-            var name = "X"+(counter)%100;
+            temp_counter++
+            var name = "X"+(temp_counter)%100;
             addEntity(name,data);
         }
 
